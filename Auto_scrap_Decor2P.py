@@ -24,7 +24,8 @@ locale.setlocale(locale.LC_NUMERIC, "de_DE")
 configuracion = locale.localeconv()
 
 # Path definition of the .csv file
-output_path = './Data/Decorceramica_twopieces.csv'
+fecha = datetime.datetime.today()
+output_path = './Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Main code
