@@ -25,53 +25,55 @@ configuracion = locale.localeconv()
 
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
-output_path = './Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+output_path = './XX_Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+
+# Path for loading the URL sites
+url_path = './XX_Url/Decorceramica_twopieces_URL.csv'
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Main code
 # ----------------------------------------------------------------------------------------------------------------------
-# URL definitioin
-URL = "https://www.decorceramica.com/busca/?fq=C:15/16&fq=spec_fct_243:1%20Pieza?O=OrderByScoreDESC"
-page = requests.get(URL)
+# Reading .csv file with url list
+URL_toilet = pd.read_csv(url_path)
 
-# Charging the content of the page using beautifulsoup
-soup = BeautifulSoup(page.content, "html.parser")
-# print(soup.prettify())
-
-# Finding the id and items where the products are located
-results = soup.find(id="collections")
-toilets_elements = results.find_all("div", class_="item")
-
-# Scrapping the names and prices of every item
+# Scrapping the information of every url
 data = []
-for elem in toilets_elements:
-    product_ref = elem.find("b", class_="product-name").text.strip()
-    try:
-        elem.find("span", class_="out-of-stock").text.strip()
-        if elem.find("span", class_="out-of-stock").text.strip() == "Disponible próximamente":
-            price_ref = elem.find("span", class_="out-of-stock").text.strip()
+for url in URL_toilet["URL_Toilet"]:
+    # Surfing the different URL
+    result = requests.get(url)
+    soup = BeautifulSoup(result.content, "html.parser")
 
-            message_price = "El producto no tiene existencia actualmente."
-            message_priceIVA = " "
-            price_IVA = 0
-    except:
-        price_ref = elem.find("span",
-                              class_="best-price").text.strip()  # OJO el precio que se muestra aqui esta sin iva
+    # Collecting the data of each URL
+    product_ref = soup.find("h2", class_="det-title").text.strip()
+    sku_ref = soup.find("div", class_="skuReference").text.strip()
+    price_ref = soup.find("strong",
+                          class_="skuBestPrice").text.strip()  # OJO el precio que se muestra aqui esta sin iva
+
+    # Collecting the image
+    image_html = soup.find("a", class_="image-zoom")
+    URL_img = image_html["href"]
+
+    # If there is not stock of the product
+    if price_ref == "":
+        price_IVA = 0  # Price is defined as 0
+    else:
+        # Correcting the price
         raw_numbers = locale.atof(price_ref.strip("$"))
-
-        message_price = "El precio sin IVA es de: {}".format(price_ref)
-        message_priceIVA = "El precio con IVA es de: ${}".format(int(np.round(raw_numbers * 1.19)))
         price_IVA = int(np.round(raw_numbers * 1.19))
 
+        # Message display
+    # print(url)
     # print("El sanitario es el: {}".format(product_ref))
-    # print(message_price)
-    # print(message_priceIVA)
+    # print("El sku es el: {}".format(sku_ref))
+    # print("El precio es: {}".format(price_IVA))
+    # print(URL_img)
+    # print("\n")
 
     # Appending the item in a list
-    data.append([datetime.datetime.today().date(), product_ref, price_IVA])
+    data.append([datetime.datetime.today().date(), "Decorceramica", product_ref, sku_ref, price_IVA, url, URL_img])
 
 # Creating the dataframe
-df = pd.DataFrame(data, columns=["Date", "Product", "Price"])
+df = pd.DataFrame(data, columns=["Fecha", "Marca", "Producto", "SKU", "Precio", "URL", "Image_url"])
 
 # Saving the file in a .csv file
 df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)

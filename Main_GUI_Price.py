@@ -1,16 +1,15 @@
 # Python project Dashboard for pricing
 # Creado por: Juan Monsalvo
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
-import pandas as pd
 import os
-import streamlit as st
+import urllib.request
 
+import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import streamlit as st
+from PIL import Image
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
@@ -52,19 +51,19 @@ if page == "Decorceramica":
     st.subheader('Analisis de precios global')
 
     # Folder path definition
-    directory = './Data'
+    directory = './XX_Data'
     files = os.listdir(directory)
 
     # Empty data frame
-    precios_mensual = pd.DataFrame()
+    df = pd.DataFrame()
 
     # Loading the DF of each month in a unique DF
     for file in files:
-        precios_mensual = pd.concat([precios_mensual, load_data(folder=directory + '/', filename=file)])
+        df = pd.concat([df, load_data(folder=directory + '/', filename=file)])
 
     # ------------------------------------------------------------------------------------------------------------------
     # Plotting line plot
-    fig = px.line(data_frame=precios_mensual, x="Date", y="Price", color="Product", line_group="Product",
+    fig = px.line(data_frame=df, x="Fecha", y="Precio", color="Producto", line_group="Producto",
                   title="Historico Precios Decorceramica Two Pieces",
                   width=1000, height=600,
                   # labels={"I_Valid": "Formatos"},
@@ -82,48 +81,29 @@ if page == "Decorceramica":
 
     st.plotly_chart(fig, use_container_width=True)
     # ------------------------------------------------------------------------------------------------------------------
-    # Plotting bar
-    fig = px.bar(data_frame=precios_mensual, x="Date", y="Price", color="Product",
-                 title="Historico Precios Decorceramica Two Pieces",
-                 width=1000, height=600,
-                 # labels={"I_Valid": "Formatos"},
-                 template="seaborn")
-
-
-    fig.update_layout(barmode='group', bargap=0.3, bargroupgap=0.02, xaxis_tickangle=0)
-    fig.update_layout(modebar_add=["v1hovermode", "toggleSpikeLines"])
-
-    fig.update_xaxes(dtick="d0.5", tickformat="%b %d\n%Y", rangeslider_visible=False)
-    fig.update_xaxes(showline=True, linewidth=0.5, linecolor='black')
-    fig.update_yaxes(showline=True, linewidth=0.5, linecolor='black')
-
-    # Set x-axis and y-axis title
-    fig['layout']['xaxis']['title'] = 'Fechas'
-    fig['layout']['yaxis']['title'] = "Precios en COP"
-
-    st.plotly_chart(fig, use_container_width=True)
-    # ------------------------------------------------------------------------------------------------------------------
     st.subheader('Analisis de precios individual')
 
     # Filtering by reference
-    ref = st.selectbox("¿Que referencía desea analizar?", list(precios_mensual["Product"].unique()))
-    precios_mensual_ref = precios_mensual[precios_mensual["Product"] == ref]
+    ref = st.selectbox("¿Que referencía desea analizar?", list(df["Producto"].unique()))
+    product_ref = df[df["Producto"] == ref]
 
-    c1, c2 = st.columns(2)
+    c1, c2 = st.columns([2,1])
     # ------------------------------------------------------------------------------------------------------------------
-    # Plotting bar
-    fig = make_subplots(specs=[[{"secondary_y": False}]])
+    # Plotting line
+    fig = px.line(data_frame=product_ref, x="Fecha", y="Precio", color="Producto", line_group="Producto",
+                  title="Historico de precios de la referencía {}".format(ref),
+                  width=1000, height=650,
+                  # labels={"I_Valid": "Formatos"},
+                  template="seaborn")
 
-    fig.add_trace(go.Bar(
-        x=precios_mensual_ref["Date"],
-        y=precios_mensual_ref["Price"],
-        text=precios_mensual_ref["Price"], textposition='auto',
-        name=ref))
-
-    title = "Historico de precios de la referencía {}".format(ref)
-    fig.update_layout(width=1000, height=600, legend=dict(orientation="v"), template="seaborn", title=title)
-    fig.update_layout(barmode='group', bargap=0.3, bargroupgap=0.02, xaxis_tickangle=0)
     fig.update_layout(modebar_add=["v1hovermode", "toggleSpikeLines"])
+    fig.update_layout(legend=dict(
+                                orientation="h",
+                                yanchor="bottom",
+                                y=1.02,
+                                xanchor="right",
+                                x=1
+                                ))
 
     fig.update_xaxes(dtick="d0.5", tickformat="%b %d\n%Y", rangeslider_visible=False)
     fig.update_xaxes(showline=True, linewidth=0.5, linecolor='black')
@@ -135,9 +115,25 @@ if page == "Decorceramica":
 
     c1.plotly_chart(fig, use_container_width=True)
     # ------------------------------------------------------------------------------------------------------------------
+    # Information from the product
+    c2.subheader("Información del Producto")
+
+    # Requesting the image
+    urllib.request.urlretrieve(product_ref["Image_url"].iloc[-1], "image.png")
+    image = Image.open('image.png')
+    c2.image(image, caption='Producto seleccionado', width=300)
+
+    # General information
+    c2.markdown("**El producto es el:** {}".format(product_ref["Producto"].iloc[-1]))
+    c2.markdown("**El SKU es el:** {}".format(product_ref["SKU"].iloc[-1]))
+    c2.markdown("**El ultimo precio registrado es de:** ${:,} COP ".format(
+        product_ref["Precio"].iloc[-1]).replace(',', '.'))
+    c2.markdown("**La pagina web del producto es la:** {}".format(product_ref["URL"].iloc[-1]))
+
+    # ------------------------------------------------------------------------------------------------------------------
     # Metrica
-    c2.metric(label="Ultimo Precio", value="{:,}".format(precios_mensual_ref["Price"].values[-1]).replace(',', '.') +
-                                           " COP", delta="{:,}".format(precios_mensual_ref["Price"].values[-1] -
-                                                                       precios_mensual_ref["Price"].values[-2]
-                                                                       ).replace(',', '.'),
-              delta_color="off")
+    # c2.metric(label="Ultimo Precio", value="{:,}".format(precios_mensual_ref["Precio"].values[-1]).replace(',', '.') +
+    #                                       " COP", delta="{:,}".format(precios_mensual_ref["Precio"].values[-1] -
+    #                                                                   precios_mensual_ref["Precio"].values[-2]
+    #                                                                   ).replace(',', '.'),
+    #          delta_color="off")
