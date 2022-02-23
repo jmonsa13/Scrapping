@@ -61,8 +61,8 @@ for url in URL_toilet["URL_Toilet"]:
         raw_numbers = locale.atof(price_ref.strip("$"))
         price_IVA = int(np.round(raw_numbers * 1.19))
 
-        # Message display
-    # print(url)
+    # Message display
+    print("Recopilando la información de {}".format(url))
     # print("El sanitario es el: {}".format(product_ref))
     # print("El sku es el: {}".format(sku_ref))
     # print("El precio es: {}".format(price_IVA))
