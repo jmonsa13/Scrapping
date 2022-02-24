@@ -10,6 +10,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from PIL import Image
+from st_aggrid import AgGrid
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
@@ -36,34 +38,39 @@ st.set_page_config(page_title="Monitoreo de Precios",
                    page_icon="📈",
                    layout="wide")
 
-tabs = ["Decorceramica", "Homecenter", "Corona"]
+tabs = ["Sanitarios", "Griferías", "Asientos"]
 page = st.sidebar.radio("Paginas", tabs, index=0)
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 # Initial page
 st.title('💲 Monitoreo de Precios - Corona 🤖')
 
+# Loading the files
+# Folder path definition
+directory = './XX_Data'
+files = os.listdir(directory)
+
+# Empty data frame
+df = pd.DataFrame()
+
+# Loading the DF of each month in a unique DF
+for file in files:
+    df = pd.concat([df, load_data(folder=directory + '/', filename=file)])
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
-if page == "Decorceramica":
-    st.header('Historico de Precios Decorceramica en Sanitarios Two Pieces')
+if page == "Sanitarios":
+    st.header('Historico de Precios Sanitarios')
 
     st.subheader('Analisis de precios global')
+    # Filtering for Sanitario
+    df_toilet = df[df["Tipo"] != "Asiento"]
 
-    # Folder path definition
-    directory = './XX_Data'
-    files = os.listdir(directory)
-
-    # Empty data frame
-    df = pd.DataFrame()
-
-    # Loading the DF of each month in a unique DF
-    for file in files:
-        df = pd.concat([df, load_data(folder=directory + '/', filename=file)])
-
+    # Filtering by marca
+    marca_sel = st.selectbox("¿Que marca desea analizar?", df_toilet["Marca"].unique(), 0)
+    df_toilet = df_toilet[df_toilet["Marca"] == marca_sel]
     # ------------------------------------------------------------------------------------------------------------------
     # Plotting line plot
-    fig = px.line(data_frame=df, x="Fecha", y="Precio", color="Producto", line_group="Producto",
+    fig = px.line(data_frame=df_toilet, x="Fecha", y="Precio", color="Producto", line_group="Producto",
                   title="Historico Precios Decorceramica Two Pieces",
                   width=1000, height=600,
                   # labels={"I_Valid": "Formatos"},
@@ -80,12 +87,19 @@ if page == "Decorceramica":
     fig['layout']['yaxis']['title'] = "Precios en COP"
 
     st.plotly_chart(fig, use_container_width=True)
+
+
+    with st.expander("Ver datos"):
+        AgGrid(df_toilet, editable=False, sortable=True, filter=True, resizable=True, defaultWidth=5,
+               fit_columns_on_grid_load=False, theme="streamlit",  # "light", "dark", "blue", "material"
+               key="Toilet", reload_data=True,  # gridOptions=gridoptions,
+               enable_enterprise_modules=True)
     # ------------------------------------------------------------------------------------------------------------------
     st.subheader('Analisis de precios individual')
 
     # Filtering by reference
-    ref = st.selectbox("¿Que referencía desea analizar?", list(df["Producto"].unique()))
-    product_ref = df[df["Producto"] == ref]
+    ref = st.selectbox("¿Que referencía desea analizar?", list(df_toilet["Producto"].unique()))
+    product_ref = df_toilet[df_toilet["Producto"] == ref]
 
     c1, c2 = st.columns([2,1])
     # ------------------------------------------------------------------------------------------------------------------
@@ -97,13 +111,7 @@ if page == "Decorceramica":
                   template="seaborn")
 
     fig.update_layout(modebar_add=["v1hovermode", "toggleSpikeLines"])
-    fig.update_layout(legend=dict(
-                                orientation="h",
-                                yanchor="bottom",
-                                y=1.02,
-                                xanchor="right",
-                                x=1
-                                ))
+    fig.update_layout(legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1))
 
     fig.update_xaxes(dtick="d0.5", tickformat="%b %d\n%Y", rangeslider_visible=False)
     fig.update_xaxes(showline=True, linewidth=0.5, linecolor='black')
