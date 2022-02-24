@@ -30,6 +30,8 @@ output_path = './XX_Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str
 # Path for loading the URL sites
 url_path = './XX_Url/Decorceramica_twopieces_URL.csv'
 
+# Text to remove from the family
+aux = ["ELONGADO", "BLANCO", "REDONDO", "BEIGE", "NEGRO", "SPRAY", "VERTICAL", "ELONG", "1", "PZ"]
 # ----------------------------------------------------------------------------------------------------------------------
 # Main code
 # ----------------------------------------------------------------------------------------------------------------------
@@ -43,23 +45,40 @@ for url in URL_toilet["URL_Toilet"]:
     result = requests.get(url)
     soup = BeautifulSoup(result.content, "html.parser")
 
-    # Collecting the data of each URL
-    product_ref = soup.find("h2", class_="det-title").text.strip()
+    # Collecting the name
+    product_ref_raw = soup.find("h2", class_="det-title").text.strip()
+    product_ref = product_ref_raw.split(" ", 1)[1]
+
+    # Collecting the type of product
+    tipo = product_ref_raw.split(" ", 1)[0]
+
+    # Collecting the family name
+    new = []
+    for j in product_ref.split(" "):
+        if j not in aux:
+            new.append(j)
+    familia = " ".join(new)
+
+    # Collecting the sku
     sku_ref = soup.find("div", class_="skuReference").text.strip()
+
+    # Collecting the price
     price_ref = soup.find("strong",
                           class_="skuBestPrice").text.strip()  # OJO el precio que se muestra aqui esta sin iva
-
-    # Collecting the image
-    image_html = soup.find("a", class_="image-zoom")
-    URL_img = image_html["href"]
 
     # If there is not stock of the product
     if price_ref == "":
         price_IVA = 0  # Price is defined as 0
+        stock = "No"
     else:
         # Correcting the price
         raw_numbers = locale.atof(price_ref.strip("$"))
         price_IVA = int(np.round(raw_numbers * 1.19))
+        stock = "Si"
+
+    # Collecting the image
+    image_html = soup.find("a", class_="image-zoom")
+    URL_img = image_html["href"]
 
     # Message display
     print("Recopilando la información de {}".format(url))
@@ -70,11 +89,12 @@ for url in URL_toilet["URL_Toilet"]:
     # print("\n")
 
     # Appending the item in a list
-    data.append([datetime.datetime.today().date(), "Decorceramica", product_ref, sku_ref, price_IVA, url, URL_img])
+    data.append([datetime.datetime.today().date(), "Decorceramica", tipo, familia, product_ref, sku_ref, price_IVA,
+                 "decorceramica.com", stock, url, URL_img])
 
 # Creating the dataframe
-df = pd.DataFrame(data, columns=["Fecha", "Marca", "Producto", "SKU", "Precio", "URL", "Image_url"])
-
+df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio",
+                                 "Market_Place", "Stock", "URL", "Image_url"])
 # Saving the file in a .csv file
 df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)
 
