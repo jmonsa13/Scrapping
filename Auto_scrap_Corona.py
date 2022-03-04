@@ -8,7 +8,6 @@ import datetime
 import locale
 import os
 
-import numpy as np
 import pandas as pd
 import requests
 
@@ -95,7 +94,7 @@ def corona_data(url, soup_html):
 # ----------------------------------------------------------------------------------------------------------------------
 # Main code
 # ----------------------------------------------------------------------------------------------------------------------
-for product_type, output_path in [[url_path_toilet, output_path_toilet], [url_path_asiento,output_path_asiento]]:
+for product_type, output_path in [[url_path_toilet, output_path_toilet], [url_path_asiento, output_path_asiento]]:
     # Reading .csv file with url list
     url_list = pd.read_csv(product_type)
 
