@@ -11,6 +11,7 @@ import numpy as np
 
 import requests
 from bs4 import BeautifulSoup
+
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 # General Variables
@@ -51,9 +52,9 @@ for i in range(NUM_RETRIES):
 
 # parse data if 200 status code (successful response)
 if response.status_code == 200:
-  # Example: parse data with beautifulsoup
-  print("Exito!!!")
+    # Example: parse data with beautifulsoup
+    print("Exito!!!")
 
-  soup = BeautifulSoup(response.content, "html.parser")
-  print(soup)
-  # quotes_sections = soup.find_all('div', class_="quote")
+    soup = BeautifulSoup(response.content, "html.parser")
+    print(soup)
+    # quotes_sections = soup.find_all('div', class_="quote")
