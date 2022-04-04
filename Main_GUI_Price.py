@@ -110,9 +110,10 @@ if page == "Sanitarios":
     # Requesting the image
     urllib.request.urlretrieve(product_ref["Image_url"].iloc[-1], "image.png")
     image = Image.open('image.png')
-    c2.image(image, caption='{} ({}) ${:,} COP'.format(product_ref["Producto"].iloc[-1],
+    c2.image(image, caption='{} ({}) ${:,} {}'.format(product_ref["Producto"].iloc[-1],
                                                                   product_ref["SKU"].iloc[-1],
-                                                                  product_ref["Precio"].iloc[-1]).replace(',', '.'),
+                                                                  product_ref["Precio"].iloc[-1],
+                                                                  product_ref["Moneda"].iloc[-1]).replace(',', '.'),
              width=300)
 
     # General information
@@ -155,9 +156,10 @@ if page == "Sanitarios":
     # Requesting the image
     urllib.request.urlretrieve(product_ref["Image_url"].iloc[-1], "image.png")
     image = Image.open('image.png')
-    cc1.image(image, caption='{} ({}) ${:,} COP'.format(product_ref["Producto"].iloc[-1],
+    cc1.image(image, caption='{} ({}) ${:,} {}'.format(product_ref["Producto"].iloc[-1],
                                                                   product_ref["SKU"].iloc[-1],
-                                                                  product_ref["Precio"].iloc[-1]).replace(',', '.'),
+                                                                  product_ref["Precio"].iloc[-1],
+                                                                  product_ref["Moneda"].iloc[-1]).replace(',', '.'),
              width=300)
 
     # General information
@@ -180,7 +182,9 @@ if page == "Sanitarios":
             urllib.request.urlretrieve(filter_precio["Image_url"].iloc[i], "image.png")
             image = Image.open('image.png')
             cc2.image(image, caption=filter_precio["Producto"].iloc[i] + " " +
-                                     "${:,} COP".format(filter_precio["Precio"].iloc[i]).replace(',', '.'), width=300)
+                      "${:,} {}".format(filter_precio["Precio"].iloc[i],
+                                        filter_precio["Moneda"].iloc[i]).replace(',', '.'),
+                      width=300)
 
             st.multiselect("¿Cuales quiere agregar?", filter_precio["Producto"].unique(), key="akkaka")
 
@@ -245,9 +249,10 @@ elif page == "Asientos":
     # Requesting the image
     urllib.request.urlretrieve(product_ref["Image_url"].iloc[-1], "image.png")
     image = Image.open('image.png')
-    c2.image(image, caption='{} ({}) ${:,} COP'.format(product_ref["Producto"].iloc[-1],
-                                                                  product_ref["SKU"].iloc[-1],
-                                                                  product_ref["Precio"].iloc[-1]).replace(',', '.'),
+    c2.image(image, caption='{} ({}) ${:,} {}'.format(product_ref["Producto"].iloc[-1],
+                                                      product_ref["SKU"].iloc[-1],
+                                                      product_ref["Precio"].iloc[-1],
+                                                      product_ref["Moneda"].iloc[-1]).replace(',', '.'),
              width=300)
 
     # General information
