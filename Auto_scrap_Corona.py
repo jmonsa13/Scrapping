@@ -86,7 +86,7 @@ def corona_data(url, soup_html):
 
     # Appending the item in a list
     information = [datetime.datetime.today().date(), "Corona", tipo_ref, familia, product_ref, sku_ref,
-                   price_IVA, "corona.co", stock, url, URL_img]
+                   price_IVA, "COP", "corona.co", stock, url, URL_img]
 
     return information
 
@@ -181,7 +181,7 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet], [url_pa
 
 
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio",
+    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio", "Moneda",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
 

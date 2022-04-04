@@ -90,10 +90,10 @@ for url in URL_toilet["URL_Toilet"]:
 
     # Appending the item in a list
     data.append([datetime.datetime.today().date(), "Decorceramica", tipo, familia, product_ref, sku_ref, price_IVA,
-                 "decorceramica.com", stock, url, URL_img])
+                 "COP", "decorceramica.com", stock, url, URL_img])
 
 # Creating the dataframe
-df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio",
+df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio", "Moneda",
                                  "Market_Place", "Stock", "URL", "Image_url"])
 # Saving the file in a .csv file
 df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)

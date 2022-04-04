@@ -122,12 +122,12 @@ for url in url_list:
         # ------------------------------------------------------------------------------------------------------------------
         # Appending the item in a list
         information = [datetime.datetime.today().date(), brand_name, "Sanitario", brand_name, product_name, sku_ref,
-                       price_clean, "homedepot.com", "Si", url, URL_img]
+                       price_clean, "USD", "homedepot.com", "Si", url, URL_img]
 
         data.append(information)
 
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio",
+    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio", "Moneda"
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
 # Saving the file in a .csv file
