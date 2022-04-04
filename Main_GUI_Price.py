@@ -57,6 +57,9 @@ df = pd.DataFrame()
 # Loading the DF of each month in a unique DF
 for file in files:
     df = pd.concat([df, load_data(folder=directory + '/', filename=file)])
+
+# Dropping duplicates in case the robot take two values by day
+df.drop_duplicates(inplace=True)
 # ----------------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 if page == "Sanitarios":

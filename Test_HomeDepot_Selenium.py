@@ -23,10 +23,11 @@ url = 'https://www.homedepot.com/'
 NUM_RETRIES = 5
 
 # Tell scraper to use Scraper API as the proxy
-PROXY = '18.118.128.148:80'
+PROXY = 'Seljmonsa13:W2a9FxY@185.240.120.20:45785'
 proxies = {'http': f'http://scraperapi:{API_KEY}@proxy-server.scraperapi.com:8001',
-           'https': f'http://scraperapi:{API_KEY}@proxy-server.scraperapi.com:8001'}
-# proxies = {'http': "http://" + PROXY, 'https': "https://" + PROXY}
+           'https': f'http://scraperapi:{API_KEY}@proxy-server.scraperapi.com:8001',
+           'no_proxy': 'localhost,127.0.0.1'}
+#proxies = {'http': "http://" + PROXY, 'https': "https://" + PROXY}
 
 proxy_options = {'proxy': proxies}
 
