@@ -32,18 +32,19 @@ output_path_toilet = './XX_Data/Homedepot_test-' + str(fecha.year) + '_' + str(f
 url1 = 'https://www.homedepot.com/p/American-Standard-Cadet-3-Tall-Height-10-in-Rough-In-2-piece-1-28-GPF-Single-' \
       'Flush-Elongated-Toilet-in-White-Seat-Included-3378AB128ST-020/206888651'
 
-url2 = 'https://www.homedepot.com/p/Glacier-Bay-2-piece-1-1-GPF-1-6-GPF-High-Efficiency-Dual-Flush-Complete-Elongated-' \
-      'Toilet-in-White-Seat-Included-N2316/100676582'
+url2 = 'https://www.homedepot.com/p/Glacier-Bay-2-piece-1-1-GPF-1-6-GPF-High-Efficiency-Dual-Flush-Complete-' \
+       'Elongated-Toilet-in-White-Seat-Included-N2316/100676582'
 
-url_list = [url1, url2]
+url3 = 'https://www.homedepot.com/p/Glacier-Bay-2-piece-1-1-GPF-1-6-GPF-Dual-Flush-Round-Toilet-in-White-N2428R-' \
+       'DF/202862164'
+
+url_list = [url1, url2, url3]
 
 NUM_RETRIES = 5
 
 # Tell scraper to use Scraper API as the proxy
-PROXY = 'Seljmonsa13:W2a9FxY@185.240.120.20:45785'
-#PROXY = 'Seljmonsa13:W2a9FxY@68.67.198.26:45785'
-
-proxies = {'http': "http://" + PROXY, 'https': "https://" + PROXY}
+# PROXY = 'Seljmonsa13:W2a9FxY@68.67.198.26:45785'
+# proxies = {'http': "http://" + PROXY, 'https': "https://" + PROXY}
 
 API_KEY = '48f0187b8c701cbe3479abbf6e6f9d81'
 
@@ -97,8 +98,12 @@ for url in url_list:
         price_clean = int(locale.atof(price_raw.strip("$")))
 
         # Collecting the sku
-        sku_ref = soup.find("div", class_="product-info-bar__detail--7va8o")
-        print(sku_ref)
+        sku_ref_bar = soup.find_all("h2", class_="product-info-bar__detail--7va8o")
+
+        for item_raw in sku_ref_bar:
+            item = item_raw.text.strip().split(" #")[0]
+            if item == "Store SKU":
+                sku_ref = item_raw.text.strip().split(" #")[1]
 
         # Collecting the image
         image_raw = soup.find("a", class_="mediagallery__anchor")
