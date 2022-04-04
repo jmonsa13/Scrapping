@@ -127,7 +127,7 @@ for url in url_list:
         data.append(information)
 
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio", "Moneda"
+    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio", "Moneda",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
 # Saving the file in a .csv file
