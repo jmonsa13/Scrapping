@@ -130,7 +130,7 @@ for url in url_list:
     df = pd.DataFrame(data, columns=["Fecha", "Marca", "Tipo", "Familia", "Producto", "SKU", "Precio",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
-    # Saving the file in a .csv file
-    df.to_csv(output_path_toilet, mode='a', header=not os.path.exists(output_path_toilet), index=False)
+# Saving the file in a .csv file
+df.to_csv(output_path_toilet, mode='a', header=not os.path.exists(output_path_toilet), index=False)
 
 
