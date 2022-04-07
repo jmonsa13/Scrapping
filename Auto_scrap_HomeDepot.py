@@ -9,12 +9,11 @@ import datetime
 import locale
 import os
 import time
+from urllib.parse import urlencode
 
 import numpy as np
 import pandas as pd
-
 import requests
-from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 
 # ----------------------------------------------------------------------------------------------------------------------
