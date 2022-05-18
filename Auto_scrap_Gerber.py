@@ -6,7 +6,6 @@
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
 import datetime
-import locale
 import os
 import time
 
@@ -21,12 +20,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
 # ----------------------------------------------------------------------------------------------------------------------
-# Setting the local currency, using DE to be able to have thousands sep = . and decimal point = ,
-locale.setlocale(locale.LC_NUMERIC, "de_DE")
-
-# Obtener definiciones de la configuración actual
-configuracion = locale.localeconv()
-
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
 output_path_toilet = './XX_Data/Gerber_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'

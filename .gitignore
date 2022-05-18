@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /XX_Url/HomeDepot_URL.xlsx
+/XX_Url/Gerber_URL.xlsx
+/XX_Url/Build_URL.xlsx
+/XX_Url/Lowes.xlsx
