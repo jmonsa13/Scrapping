@@ -30,7 +30,7 @@ fecha = datetime.datetime.today()
 output_path_toilet = './XX_Data/Lowes_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
-url_path_toilet = './XX_URL/Lowes.xlsx'
+url_path_toilet = './XX_Url/Lowes.xlsx'
 
 # Number of retry
 NUM_RETRIES = 5
