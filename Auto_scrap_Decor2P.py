@@ -5,7 +5,6 @@
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
 import datetime
-import locale
 import os
 
 import numpy as np
@@ -17,12 +16,6 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
 # ----------------------------------------------------------------------------------------------------------------------
-# Setting the local currency, using DE to be able to have thousands sep = . and decimal point = ,
-locale.setlocale(locale.LC_NUMERIC, "de_DE")
-
-# Obtener definiciones de la configuración actual
-configuracion = locale.localeconv()
-
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
 output_path = './XX_Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
@@ -72,7 +65,7 @@ for url in URL_toilet["URL_Toilet"]:
         stock = "No"
     else:
         # Correcting the price
-        raw_numbers = locale.atof(price_ref.strip("$"))
+        raw_numbers = float(price_ref.strip("$").replace(".", "").replace(",", "."))
         price_IVA = int(np.round(raw_numbers * 1.19))
         stock = "Si"
 
