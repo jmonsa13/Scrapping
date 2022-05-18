@@ -5,7 +5,6 @@
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
 import datetime
-import locale
 import os
 
 import pandas as pd
@@ -16,12 +15,6 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
 # ----------------------------------------------------------------------------------------------------------------------
-# Setting the local currency, using DE to be able to have thousands sep = . and decimal point = ,
-locale.setlocale(locale.LC_NUMERIC, "de_DE")
-
-# Obtener definiciones de la configuración actual
-configuracion = locale.localeconv()
-
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
 output_path_toilet = './XX_Data/Corona_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
@@ -47,12 +40,11 @@ def corona_data(url, soup_html):
 
     # Collecting the price
     price_raw = soup_html.find("span", class_="price").text.strip()
-    price_IVA = int(locale.atof(price_raw.strip("$")))
     if price_raw == "":
         price_IVA = 0
     else:
         # Correcting the price
-        price_IVA = int(locale.atof(price_raw.strip("$")))
+        price_IVA = int(price_raw.strip("$").strip().replace(".", ""))
 
     # Collecting the stock
     stock_flag = soup_html.find("div", class_="coc-productsold-form-wp coc-productsold-component")
