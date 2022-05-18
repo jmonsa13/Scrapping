@@ -6,7 +6,6 @@
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
 import datetime
-import locale
 import os
 import time
 from urllib.parse import urlencode
@@ -19,12 +18,6 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------------------------------------------------
 # Configuration and Global Variables
 # ----------------------------------------------------------------------------------------------------------------------
-# Setting the local currency, using DE to be able to have thousands sep = . and decimal point = ,
-locale.setlocale(locale.LC_NUMERIC, "de_DE")
-
-# Obtener definiciones de la configuración actual
-configuracion = locale.localeconv()
-
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
 output_path_toilet = './XX_Data/Homedepot_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
@@ -68,7 +61,7 @@ def homedepot_data(elem, soup_html):
     # Collecting the current price
     price_raw = soup_html.find("div", class_="price").text.strip()[:-2]
     decimals = float(soup_html.find("div", class_="price").text.strip()[-2:])
-    price_sin_decimal = int(locale.atof(price_raw.strip("$")))
+    price_sin_decimal = int(price_raw.strip("$"))
     price_clean = price_sin_decimal + (decimals/100)
 
     # TODO: Capturar en promoción
