@@ -82,8 +82,9 @@ def build_data(elem, soup_html):
     print("\n")
     # ------------------------------------------------------------------------------------------------------------------
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), brand_name, elem["Linea"], product_format, elem["Rough in"],
-                   elem["Bowl Height"], elem["Asiento / Capacidad"], product_name, sku_ref, internet_ref,
+    information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
+                   elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                   elem["Capacidad (Gpl)"], product_name, internet_ref,
                    price_clean, "USD", "build.com", "Si", elem["Link"], url_img]
 
     return information
@@ -136,9 +137,10 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             data.append(toilet_information)
 
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Marca", "Linea", "Tipo", "Rough_In", "Bowl Height", "Asiento/Capacidad",
-                                     "Producto", "SKU", "Cod_Internet", "Precio", "Moneda", "Market_Place", "Stock",
-                                     "URL", "Image_url"])
+    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", "Tipo", "Rough_In",
+                                     "Bowl Height", "Asiento", "Capacidad (Gpl)", "Producto",
+                                     "Cod_Internet", "Precio", "Moneda",
+                                     "Market_Place", "Stock", "URL", "Image_url"])
 
     # Saving the file in a .csv file
     df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)
