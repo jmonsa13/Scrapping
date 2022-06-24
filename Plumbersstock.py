@@ -1,7 +1,7 @@
 # Python project for pricing scripping of different sites
 # Creado por: Juan Felipe Monsalvo Salazar
 
-# FOR AmericanStandard-US
+# FOR Plumbersstock
 # ----------------------------------------------------------------------------------------------------------------------
 # Libraries import
 # ----------------------------------------------------------------------------------------------------------------------
@@ -19,10 +19,10 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------------------------------------------------
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
-output_path_toilet = './XX_Data/American_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+output_path_toilet = './XX_Data/Plumbersstock_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
-url_path_toilet = './XX_Url/AmericanStandardUS.xlsx'
+url_path_toilet = './XX_Url/Plumbersstock.xlsx'
 
 # Number of retry
 NUM_RETRIES = 5
@@ -36,13 +36,14 @@ headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
 
 
 # Function for data extract informacion of product
-def american_data(elem, soup_html):
+def plumbersstock_data(elem, soup_html):
     """
     Programa que toma la información general de una pagina de producto del market place de AmericanStandard-us
     """
     # Collecting the name and product type
-    brand_name = soup_html.find('div', class_='product-collection').text.strip()
-    product_name = soup_html.find('div', class_='product-name').text.strip()
+    # brand_name = soup_html.find('div', class_='product-detail__brand-container').text.strip()
+    product_name = soup_html.find('div', class_='summary col-tablet-6').find('h1').text.strip()
+    print(product_name)
 
     if "bowl" in product_name.lower():
         product_format = "Bowl"
@@ -52,44 +53,40 @@ def american_data(elem, soup_html):
         product_format = "Toilet"
 
     # Collecting the sku
-    sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
-    # internet_ref = soup_html.find('div', class_='w-25 tr f6').text.split(' ')[2]
+    # sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
+    internet_ref = soup_html.find('div', class_='sku').text.strip().split()[-1]
 
     # Collecting the current price
-    price_clean = soup_html.find('div', class_='component-content price-info')['listprice'].strip('$ ')
-    adjusted_price_clean = soup_html.find('div', class_='component-content price-info')['adjustedprice'].strip('$ ')
-
+    price_clean = soup_html.find('span', class_='price').text.strip()
 
     # Collecting the image
-    url_img = soup_html.find('div', class_='product-carousel').find('div', class_='item productimage')\
-        .find("img")['src']
+    url_img = soup_html.find('div', class_='image prodImages col-tablet-6')\
+        .find('span', class_="image-zoom").find('img')['src']
 
     # Stock Online
-    unstock_flag = soup_html.find('div', class_='component cxa-addtocart-component')\
-        .find('div', class_='component-content out-stock-sv')
-    if unstock_flag is None:
-        stock = 'Si'
-    else:
+    stock_flag = soup_html.find('div', class_='availability')\
+        .find('span', class_='status instock')
+    if stock_flag is None:
         stock = 'No'
-
+    else:
+        stock = 'Si'
     # ------------------------------------------------------------------------------------------------------------------
     # Message display
     print("Recopilando la información de {}".format(elem["Link"]))
-    print("La marca es la: {}".format(brand_name))
+    # print("La marca es la: {}".format(brand_name))
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
-    print("El sku es el: {}".format(sku_ref))
-    # print("El sku_internet es el: {}".format(internet_ref))
+    # print("El sku es el: {}".format(sku_ref))
+    print("El sku_internet es el: {}".format(internet_ref))
     print("El precio listado es: {} USD".format(price_clean))
-    print("El precio ajustado es: {} USD".format(adjusted_price_clean))
     print(url_img)
     print("\n")
     # ------------------------------------------------------------------------------------------------------------------
     # Appending the item in a list
     information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
                    elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
-                   elem["Capacidad (Gpl)"], product_name, '',
-                   adjusted_price_clean, "USD", "americanstandard-us.com", stock, elem["Link"], url_img]
+                   elem["Capacidad (Gpl)"], product_name, internet_ref,
+                   price_clean, "USD", "plumbersstock.com", stock, elem["Link"], url_img]
 
     return information
 
@@ -132,7 +129,7 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
             # Getting the information from the website
-            toilet_information = american_data(elem, soup)
+            toilet_information = plumbersstock_data(elem, soup)
             data.append(toilet_information)
 
     # Creating the dataframe
