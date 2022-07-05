@@ -48,7 +48,7 @@ def ferguson_data(elem, soup_html):
     product_name = soup.find("h1", class_="product__name").text.strip()
 
     if "two piece" in product_name.lower():
-        product_format = "Two Piece"
+        product_format = "Toilet"
     elif "one piece" in product_name.lower():
         product_format = "One Piece"
     elif "bowl" in product_name.lower():

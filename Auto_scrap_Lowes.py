@@ -59,7 +59,7 @@ def lowes_data(elem, data):
     product_name = data["productDetails"][item_id]["product"]["description"]
 
     if "toilet" in product_name.lower():
-        product_format = "toilet"
+        product_format = "Toilet"
     elif "one piece" in product_name.lower():
         product_format = "One Piece"
     elif "bowl" in product_name.lower():
