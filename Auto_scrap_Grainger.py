@@ -63,8 +63,9 @@ def grainger_data(elem, soup_html):
     price_clean = soup_html.find('span', class_='pricing__price').text.strip().strip('$')
 
     # Collecting the image
-    url_img = soup_html.find('div', class_='enhanced-content__images')\
+    url_img_aux = soup_html.find('div', class_='enhanced-content__images')\
         .find('div', class_="enhanced-content__thumbnail-container").find('img')['data-src'].split('?')[0]
+    url_img = 'https:' + url_img_aux
 
     # Stock Online
     # stock
