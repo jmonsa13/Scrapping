@@ -18,8 +18,11 @@ from bs4 import BeautifulSoup
 # Configuration and Global Variables
 # ----------------------------------------------------------------------------------------------------------------------
 # Path definition of the .csv file
-fecha = datetime.datetime.today()
-output_path_toilet = './XX_Data/American_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+fecha = datetime.datetime.today()# Checking and creating the folder
+folder = fecha.strftime('%Y-%m')
+if not os.path.exists('./XX_Data/' + folder):
+    os.makedirs('./XX_Data/' + folder)
+output_path_toilet = './XX_Data/' + folder + '/American_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
 url_path_toilet = './XX_Url/AmericanStandardUS.xlsx'

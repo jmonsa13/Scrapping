@@ -18,7 +18,10 @@ from bs4 import BeautifulSoup
 # ----------------------------------------------------------------------------------------------------------------------
 # Path definition of the .csv file
 fecha = datetime.datetime.today()
-output_path = './XX_Data/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+folder = fecha.strftime('%Y-%m')
+if not os.path.exists('./XX_Data/' + folder):
+    os.makedirs('./XX_Data/' + folder)
+output_path = './XX_Data/' + folder + '/Decorceramica_twopieces-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
 url_path = './XX_Url/Decorceramica_twopieces_URL.csv'
