@@ -50,27 +50,19 @@ delays = [1, 4, 8, 2, 5, 3]
 # ----------------------------------------------------------------------------------------------------------------------
 def lowes_data(elem, data):
     """
-    Programa que toma la información general de una pagina de producto del market place de Ferguson
+    Programa que toma la información general de una pagina de producto del market place de Lowes
     """
 
     item_id = elem['Link'].split("/")[-1]
     # print(json.dumps(data["productDetails"][item_id], indent=4, sort_keys=True))
 
-    # Collecting the name and product tipe
-    Status = data["productDetails"][item_id]["product"]["status"]
-    brand_name = data["productDetails"][item_id]["product"]["brand"]
-    product_name = data["productDetails"][item_id]["product"]["description"]
-
-    if "toilet" in product_name.lower():
-        product_format = "Toilet"
-    elif "one piece" in product_name.lower():
-        product_format = "One Piece"
-    elif "bowl" in product_name.lower():
-        product_format = "Bowl"
-    elif "tank" in product_name.lower():
-        product_format = "Tank"
-    else:
-        product_format = ""
+    # Collecting the name and product type
+    brand_name = elem["Fabricante"]
+    product_name = elem["Short Name"]
+    product_format = elem["Type"]
+    # status = data["productDetails"][item_id]["product"]["status"]
+    # brand_name = data["productDetails"][item_id]["product"]["brand"]
+    # product_name = data["productDetails"][item_id]["product"]["description"]
 
     # Collecting the price
     try:
@@ -127,7 +119,7 @@ def lowes_data(elem, data):
     # ------------------------------------------------------------------------------------------------------------------
 
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"],
                    elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                    elem["Capacidad (Gpl)"], product_name, item_ref,
                    price_clean, "USD", "lowes.com", "Si", elem["Link"], url_img]

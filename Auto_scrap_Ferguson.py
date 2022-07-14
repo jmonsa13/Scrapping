@@ -47,20 +47,12 @@ def ferguson_data(elem, soup_html):
     Programa que toma la información general de una pagina de producto del market place de Ferguson
     """
 
-    # Collecting the name and product tipe
-    brand_name = soup.find("h2", class_="product__brand").text.strip()
-    product_name = soup.find("h1", class_="product__name").text.strip()
-
-    if "two piece" in product_name.lower():
-        product_format = "Toilet"
-    elif "one piece" in product_name.lower():
-        product_format = "One Piece"
-    elif "bowl" in product_name.lower():
-        product_format = "Bowl"
-    elif "tank" in product_name.lower():
-        product_format = "Tank"
-    else:
-        product_format = ""
+    # Collecting the name and product type
+    brand_name = elem["Fabricante"]
+    product_name = elem["Short Name"]
+    product_format = elem["Type"]
+    # brand_name = soup.find("h2", class_="product__brand").text.strip()
+    # product_name = soup.find("h1", class_="product__name").text.strip()
 
     # Collecting the price
     price_clean = float(soup.find("span", class_="price__main price-value").text.strip())
@@ -100,7 +92,7 @@ def ferguson_data(elem, soup_html):
     # ------------------------------------------------------------------------------------------------------------------
 
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"],
                    elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                    elem["Capacidad (Gpl)"], product_name, item_ref,
                    price_clean, "USD", "ferguson.com", "Si", elem["Link"], url_img]

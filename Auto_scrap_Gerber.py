@@ -65,19 +65,11 @@ def gerber_data(elem, soup_html):
     """
     Programa que toma la información general de una pagina de producto del market place de Gerber
     """
-    # Collecting the name and product tipe
-    brand_name = "Gerber"
-    product_name = soup_html.find('div', class_='col-auto flex-shrink-1').find("h1", class_="h3").text.strip()
-    if "bowl" in product_name.lower():
-        product_format = "Bowl"
-    elif "tank" in product_name.lower():
-        product_format = "Tank"
-    elif "toilet" in product_name.lower():
-        product_format = "Toilet"
-    elif "toilet seat" in product_name.lower():
-        product_format = "Seat"
-    else:
-        product_format = ""
+    # Collecting the name and product type
+    brand_name = elem["Fabricante"]
+    product_name = elem["Short Name"]
+    product_format = elem["Type"]
+    # product_name = soup_html.find('div', class_='col-auto flex-shrink-1').find("h1", class_="h3").text.strip()
 
     # Collecting the current price
     price_clean = float(soup_html.find('span', class_='d-block color-blue h2 fw-normal mb-0 '
@@ -104,7 +96,7 @@ def gerber_data(elem, soup_html):
     print("\n")
 
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
+    information = [datetime.datetime.today().date(),brand_name, elem["Sku"],
                    elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                    elem["Capacidad (Gpl)"], product_name, internet_ref,
                    price_clean, "USD", "gerber-us.com", "Si", elem["Link"], url_img]

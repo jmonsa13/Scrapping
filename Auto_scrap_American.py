@@ -41,18 +41,14 @@ headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleW
 # Function for data extract informacion of product
 def american_data(elem, soup_html):
     """
-    Programa que toma la información general de una pagina de producto del market place de AmericanStandard-us
+    Programa que toma la información general de una página de producto del market place de AmericanStandard-us
     """
     # Collecting the name and product type
-    brand_name = soup_html.find('div', class_='product-collection').text.strip()
-    product_name = soup_html.find('div', class_='product-name').text.strip()
-
-    if "bowl" in product_name.lower():
-        product_format = "Bowl"
-    elif "tank" in product_name.lower():
-        product_format = "Tank"
-    else:
-        product_format = "Toilet"
+    brand_name = elem["Fabricante"]
+    product_name = elem["Short Name"]
+    product_format = elem["Type"]
+    # brand_name = soup_html.find('div', class_='product-collection').text.strip()
+    # product_name = soup_html.find('div', class_='product-name').text.strip()
 
     # Collecting the sku
     sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
@@ -89,7 +85,7 @@ def american_data(elem, soup_html):
     print("\n")
     # ------------------------------------------------------------------------------------------------------------------
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), elem["Fabricante"], elem["Sku"],
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"],
                    elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                    elem["Capacidad (Gpl)"], product_name, '',
                    adjusted_price_clean, "USD", "americanstandard-us.com", stock, elem["Link"], url_img]
