@@ -33,16 +33,6 @@ url_path_toilet = './XX_Url/Southernpipe.xlsx'
 # Number of retry
 NUM_RETRIES = 5
 
-# Tell scraper to use Scraper API as the proxy
-API_KEY = '48f0187b8c701cbe3479abbf6e6f9d81'
-
-proxy_options = {
-    'proxy': {
-        'http': f'http://scraperapi:{API_KEY}@proxy-server.scraperapi.com:8001',
-        'no_proxy': 'localhost,127.0.0.1'
-    }
-}
-
 # Waiting time between request
 delays = [1, 4, 8, 2, 5, 3]
 
@@ -65,7 +55,7 @@ options.add_argument('--headless')
 s = Service(ChromeDriverManager().install())
 
 # Loading the WebBrowser
-driver = webdriver.Chrome(service=s, options=options, seleniumwire_options=proxy_options)
+driver = webdriver.Chrome(service=s, options=options)
 
 # Function for data extract information of product
 def southernpipe_data(elem, soup_html):
@@ -172,3 +162,6 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
 
     # Saving the file in a .csv file
     df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)
+
+    # Quit the driver
+    driver.quit()
