@@ -59,8 +59,8 @@ def supplyworks_data(elem, soup_html):
     price_clean = soup_html.find('span', {'data-id': 'currentPrice'}).text.split(' ')[0].split('$')[1]
 
     # Collecting the image
-    # TODO: Get the src using selenium
-    url_img = soup_html.find('img', class_='pure-img text-center sku-image').attrs['src']
+    url_img = soup_html.find('img', class_='pure-img centered-image pointer').attrs['src']\
+        .replace('Thumbnail', 'Detail').replace('\\', '/')
 
     # Stock Online
     try:
