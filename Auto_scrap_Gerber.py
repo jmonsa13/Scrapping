@@ -162,3 +162,6 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
     # Saving the file in a .csv file
     df.to_csv(output_path, mode='a', header=not os.path.exists(output_path), index=False)
 
+    # Quit the driver
+    driver.quit()
+
