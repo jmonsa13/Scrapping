@@ -57,8 +57,8 @@ def build_data(elem, soup_html):
     # product_name = soup_html.find('h1', class_='ma0 fw6 lh-title di f5 f3-ns').find('span', class_='fw2 di-ns').text
 
     # Collecting the sku
-    sku_ref = soup_html.find('h2', class_='f7 fw4 mt1 lh-title theme-grey-medium mt2 mt0-ns '
-                             'mb0').find('span', class_='b').text
+    # sku_ref = soup_html.find('h2', class_='f7 fw4 mt1 lh-title theme-grey-medium mt2 mt0-ns '
+    #                         'mb0').find('span', class_='b').text
     internet_ref = soup_html.find('div', class_='w-25 tr f6').text.split(' ')[2]
 
     # Collecting the current price
@@ -75,7 +75,7 @@ def build_data(elem, soup_html):
     print("La marca es la: {}".format(brand_name))
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
-    print("El sku es el: {}".format(sku_ref))
+    # print("El sku es el: {}".format(sku_ref))
     print("El sku_internet es el: {}".format(internet_ref))
     print("El precio es: {} USD".format(price_clean))
     print(url_img)
