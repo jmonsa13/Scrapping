@@ -124,7 +124,7 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             try:
                 # Selenium and wait for the page to load
                 driver.get(elem["Link"])
-                time.sleep(5)
+                time.sleep(10)
 
                 # Response code
                 response = requests.get(elem["Link"], headers=headers)

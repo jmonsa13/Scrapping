@@ -8,6 +8,7 @@
 import datetime
 import os
 import time
+from urllib.parse import urlencode
 
 import numpy as np
 import pandas as pd
@@ -56,7 +57,11 @@ def plumblingandelectric_data(elem, soup_html):
     internet_ref = soup_html.find('meta', {'itemprop': 'sku'}).attrs['content']
 
     # Collecting the current price
-    price_clean = soup_html.find('h3', class_='priceColor').text.split(' ')[1].split('$')[1].strip()
+    price_clean_raw = soup_html.find('h3', class_='priceColor').text
+    if price_clean_raw == 'Price Not Available':
+        price_clean = 0
+    else:
+        price_clean = price_clean_raw.split(' ')[1].split('$')[1].strip()
 
     # Collecting the image
     url_img = soup_html.find('meta', {'itemprop':'image'}).attrs['content']
@@ -78,6 +83,7 @@ def plumblingandelectric_data(elem, soup_html):
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
     # print("El sku es el: {}".format(sku_ref))
+    print('Se tiene stock {}:'.format(stock))
     print("El sku_internet es el: {}".format(internet_ref))
     print("El precio listado es: {} USD".format(price_clean))
     print(url_img)
