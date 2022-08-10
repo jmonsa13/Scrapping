@@ -55,7 +55,11 @@ def edgesupply_data(elem, soup_html):
     internet_ref = soup_html.find('meta', {'itemprop': 'sku'}).attrs['content']
 
     # Collecting the current price
-    price_clean = soup_html.find('h3', class_='priceColor').text.split(' ')[2].split('$')[1].strip()
+    price_clean_raw = soup_html.find('h3', class_='priceColor').text
+    if price_clean_raw == 'Price Not Available':
+        price_clean = 0
+    else:
+        price_clean = price_clean_raw.split(' ')[2].split('$')[1].strip()
 
     # Collecting the image
     url_img = soup_html.find('meta', {'itemprop': 'image'}).attrs['content']
