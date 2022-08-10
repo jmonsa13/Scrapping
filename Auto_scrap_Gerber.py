@@ -76,7 +76,7 @@ def gerber_data(elem, soup_html):
                                      'product-price').text.strip().strip("$"))
 
     # Collecting the sku
-    sku_ref = soup_html.find("div", class_="col-auto fw-500").text
+    # sku_ref = soup_html.find("div", class_="col-auto fw-500").text
     internet_ref = ""
 
     # Collecting the image
@@ -90,7 +90,7 @@ def gerber_data(elem, soup_html):
     print("La marca es la: {}".format(brand_name))
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
-    print("El sku es el: {}".format(sku_ref))
+    # print("El sku es el: {}".format(sku_ref))
     print("El precio es: {} USD".format(price_clean))
     print(url_img)
     print("\n")
