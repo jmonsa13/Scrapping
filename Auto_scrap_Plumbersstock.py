@@ -58,8 +58,8 @@ def plumbersstock_data(elem, soup_html):
     price_clean = soup_html.find('span', class_='price').text.strip()
 
     # Collecting the image
-    url_img = soup_html.find('div', class_='image prodImages col-tablet-6')\
-        .find('span', class_="image-zoom").find('img')['src']
+    url_img = soup_html.find('div', class_='image prodImages flex-row flex--wrap')\
+        .find('span', class_="image-zoom")['data-path']
 
     # Stock Online
     stock_flag = soup_html.find('div', class_='availability')\
