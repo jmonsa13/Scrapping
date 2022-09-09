@@ -34,7 +34,9 @@ url_path_toilet = './XX_Url/Build_URL.xlsx'
 NUM_RETRIES = 5
 
 # Tell scraper to use Scraper API as the proxy
-API_KEY = 'd9d061ea3ad19b7f0eb56c83f416ba06'
+# API_KEY = 'd9d061ea3ad19b7f0eb56c83f416ba06'
+# API_KEY = '9c2caae056c046ad7fed2af9eeda0100'  # hotmail.com
+API_KEY = '48f0187b8c701cbe3479abbf6e6f9d81'  # gmail.com
 
 # Waiting time between request
 delays = [1, 4, 8, 2, 5, 3]
