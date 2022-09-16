@@ -22,10 +22,11 @@ fecha = datetime.datetime.today()# Checking and creating the folder
 folder = fecha.strftime('%Y-%m')
 if not os.path.exists('./XX_Data/' + folder):
     os.makedirs('./XX_Data/' + folder)
-output_path_toilet = './XX_Data/' + folder + '/American_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+output_path_toilet = './XX_Data/' + folder + '/American_wholesaler-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
-url_path_toilet = './XX_Url/AmericanStandardUS.xlsx'
+url_path_toilet = './XX_Master_database/Wholesaler_Database.xlsx'
+fabricante = 'American Standard'
 
 # Number of retry
 NUM_RETRIES = 5
@@ -45,10 +46,12 @@ def american_data(elem, soup_html):
     """
     # Collecting the name and product type
     brand_name = elem["Fabricante"]
-    product_name = elem["Short Name"]
-    product_format = elem["Type"]
-    # brand_name = soup_html.find('div', class_='product-collection').text.strip()
-    # product_name = soup_html.find('div', class_='product-name').text.strip()
+    product_name = elem["Description"]
+    product_subcategory = elem["Subcategory"]
+    product_format = elem["Tipo"]
+    linea_name = elem["Linea"]
+    price_type = elem["Price Type"]
+    multiplier = elem['Multiplicador']
 
     # Collecting the sku
     sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
@@ -56,8 +59,6 @@ def american_data(elem, soup_html):
 
     # Collecting the current price
     price_clean = soup_html.find('div', class_='component-content price-info')['listprice'].strip('$ ')
-    adjusted_price_clean = soup_html.find('div', class_='component-content price-info')['adjustedprice'].strip('$ ')
-
 
     # Collecting the image
     url_img = soup_html.find('div', class_='product-carousel').find('div', class_='item productimage')\
@@ -68,8 +69,10 @@ def american_data(elem, soup_html):
         .find('div', class_='component-content out-stock-sv')
     if unstock_flag is None:
         stock = 'Si'
+        consumer_price_clean = soup_html.find('div', class_='component-content price-info')['adjustedprice'].strip('$ ')
     else:
         stock = 'No'
+        consumer_price_clean = None
 
     # ------------------------------------------------------------------------------------------------------------------
     # Message display
@@ -78,17 +81,16 @@ def american_data(elem, soup_html):
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
     print("El sku es el: {}".format(sku_ref))
-    # print("El sku_internet es el: {}".format(internet_ref))
     print("El precio listado es: {} USD".format(price_clean))
-    print("El precio ajustado es: {} USD".format(adjusted_price_clean))
+    print("El precio consumidor es: {} USD".format(consumer_price_clean))
     print(url_img)
     print("\n")
     # ------------------------------------------------------------------------------------------------------------------
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), brand_name, elem["Sku"],
-                   elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
-                   elem["Capacidad (Gpl)"], product_name, '',
-                   adjusted_price_clean, "USD", "americanstandard-us.com", stock, elem["Link"], url_img]
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
+                   product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                   elem["Capacidad"], product_name, price_type, multiplier, price_clean,
+                   consumer_price_clean, "USD", "americanstandard-us.com", stock, elem["Link"], url_img]
 
     return information
 
@@ -97,7 +99,8 @@ def american_data(elem, soup_html):
 # ----------------------------------------------------------------------------------------------------------------------
 for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
     # Reading .xlsx file with url list
-    file_df = pd.read_excel(product_type)
+    file_df = pd.read_excel(product_type, sheet_name='Competitors')
+    file_df = file_df[file_df['Fabricante'] == fabricante]
 
     # Keeping just the row with links
     product_df = file_df[file_df['Link'].notna()]
@@ -134,10 +137,30 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             toilet_information = american_data(elem, soup)
             data.append(toilet_information)
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # Keeping just the row without links
+    product_df_notlink = file_df[file_df['Link'].isna()]
+    for index, elem in product_df_notlink.iterrows():
+        brand_name = elem["Fabricante"]
+        product_name = elem["Description"]
+        product_subcategory = elem["Subcategory"]
+        product_format = elem["Tipo"]
+        linea_name = elem["Linea"]
+        price_type = elem["Price Type"]
+        multiplier = elem['Multiplicador']
+
+        # Appending the item in a list
+        information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
+                       product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                       elem["Capacidad"], product_name, price_type, multiplier, elem['List Price'],
+                       None, "USD", "americanstandard-us.com", None, None, None]
+        data.append(information)
+    # ------------------------------------------------------------------------------------------------------------------
+
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", "Tipo", "Rough_In",
-                                     "Bowl Height", "Asiento", "Capacidad (Gpl)", "Producto",
-                                     "Cod_Internet", "Precio", "Moneda",
+    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", 'Subcategoria', "Tipo", "Rough_In",
+                                     "Bowl_Height", "Asiento", "Capacidad_(Gpl)", "Producto",
+                                     "Price_Type", "Multiplicador", "Precio_Lista", "Precio_Consumidor", "Moneda",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
     # Saving the file in a .csv file

@@ -25,10 +25,11 @@ fecha = datetime.datetime.today()
 folder = fecha.strftime('%Y-%m')
 if not os.path.exists('./XX_Data/' + folder):
     os.makedirs('./XX_Data/' + folder)
-output_path_toilet = './XX_Data/' + folder + '/Gerber_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+output_path_toilet = './XX_Data/' + folder + '/Gerber_wholesaler-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
-url_path_toilet = './XX_Url/Gerber_URL.xlsx'
+url_path_toilet = './XX_Master_database/Wholesaler_Database.xlsx'
+fabricante = 'Gerber'
 
 # Number of retry
 NUM_RETRIES = 5
@@ -67,9 +68,12 @@ def gerber_data(elem, soup_html):
     """
     # Collecting the name and product type
     brand_name = elem["Fabricante"]
-    product_name = elem["Short Name"]
-    product_format = elem["Type"]
-    # product_name = soup_html.find('div', class_='col-auto flex-shrink-1').find("h1", class_="h3").text.strip()
+    product_name = elem["Description"]
+    product_subcategory = elem["Subcategory"]
+    product_format = elem["Tipo"]
+    linea_name = elem["Linea"]
+    price_type = elem["Price Type"]
+    multiplier = elem['Multiplicador']
 
     # Collecting the current price
     price_clean = float(soup_html.find('span', class_='d-block color-blue h2 fw-normal mb-0 '
@@ -77,7 +81,6 @@ def gerber_data(elem, soup_html):
 
     # Collecting the sku
     # sku_ref = soup_html.find("div", class_="col-auto fw-500").text
-    internet_ref = ""
 
     # Collecting the image
     image_raw = soup_html.find("div", class_="Img__Wrapper")
@@ -96,10 +99,10 @@ def gerber_data(elem, soup_html):
     print("\n")
 
     # Appending the item in a list
-    information = [datetime.datetime.today().date(),brand_name, elem["Sku"],
-                   elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
-                   elem["Capacidad (Gpl)"], product_name, internet_ref,
-                   price_clean, "USD", "gerber-us.com", "Si", elem["Link"], url_img]
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
+                   product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                   elem["Capacidad"], product_name, price_type, multiplier, price_clean, None,
+                   "USD", "gerber-us.com", 'Si', elem["Link"], url_img]
 
     return information
 
@@ -110,6 +113,7 @@ def gerber_data(elem, soup_html):
 for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
     # Reading .xlsx file with url list
     file_df = pd.read_excel(product_type)
+    file_df = file_df[file_df['Fabricante'] == fabricante]
 
     # Keeping just the row with links
     product_df = file_df[file_df['Link'].notna()]
@@ -153,10 +157,29 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             toilet_information = gerber_data(elem, soup)
             data.append(toilet_information)
 
+    # ------------------------------------------------------------------------------------------------------------------
+    # Keeping just the row without links
+    product_df_notlink = file_df[file_df['Link'].isna()]
+    for index, elem in product_df_notlink.iterrows():
+        brand_name = elem["Fabricante"]
+        product_name = elem["Description"]
+        product_subcategory = elem["Subcategory"]
+        product_format = elem["Tipo"]
+        linea_name = elem["Linea"]
+        price_type = elem["Price Type"]
+        multiplier = elem['Multiplicador']
+
+        # Appending the item in a list
+        information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
+                       product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                       elem["Capacidad"], product_name, price_type, multiplier, elem['List Price'],
+                       None, "USD", "americanstandard-us.com", None, None, None]
+        data.append(information)
+
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", "Tipo", "Rough_In",
-                                     "Bowl Height", "Asiento", "Capacidad (Gpl)", "Producto",
-                                     "Cod_Internet", "Precio", "Moneda",
+    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", 'Subcategoria', "Tipo", "Rough_In",
+                                     "Bowl_Height", "Asiento", "Capacidad_(Gpl)", "Producto",
+                                     "Price_Type", "Multiplicador", "Precio_Lista", "Precio_Consumidor", "Moneda",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
     # Saving the file in a .csv file
