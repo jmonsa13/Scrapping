@@ -32,8 +32,8 @@ url_path_toilet = './XX_Url/HomeDepot_URL.xlsx'
 NUM_RETRIES = 5
 
 # Tell scraper to use Scraper API as the proxy
-# API_KEY = '9c2caae056c046ad7fed2af9eeda0100'  # hotmail.com
-API_KEY = '48f0187b8c701cbe3479abbf6e6f9d81'  # gmail.com
+API_KEY = '9c2caae056c046ad7fed2af9eeda0100'  # hotmail.com
+# API_KEY = '48f0187b8c701cbe3479abbf6e6f9d81'  # gmail.com
 
 
 # Waiting time between request
@@ -51,6 +51,7 @@ def homedepot_data(elem, soup_html):
     """
     Programa que toma la información general de una pagina de producto del market place de HomeDepot
     """
+    print(elem['Link'])
 
     # Collecting the name and product type
     brand_name = elem["Fabricante"]
@@ -100,7 +101,7 @@ def homedepot_data(elem, soup_html):
     # print(delivery)
 
     # Collecting the image
-    image_raw = soup_html.find("a", class_="mediagallery__anchor")
+    image_raw = soup_html.find("div", class_="mediagallery__mainimage")
     image_html = image_raw.find("img")
     url_img = image_html["src"]
 
