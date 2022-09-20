@@ -61,6 +61,7 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
         linea_name = elem["Linea"]
         price_type = elem["Price Type"]
         multiplier = elem['Multiplicador']
+        url_img = elem['URL_Img']
 
         # ------------------------------------------------------------------------------------------------------------------
         # Message display
@@ -70,14 +71,14 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
         print("El tipo de producto es un: {}".format(product_format))
         print("El sku es el: {}".format(elem["Sku"]))
         print("El precio listado es: {} USD".format(elem['Platinum Price']))
-        # print(url_img)
+        print(url_img)
         print("\n")
 
         # Appending the item in a list
         information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
                        product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
-                       elem["Capacidad"], product_name, price_type, multiplier, np.round(elem['Platinum Price'],2),
-                       None, "USD", "mansfieldplumbing.com", None, None, None]
+                       elem["Capacidad"], product_name, price_type, multiplier, np.round(elem['Platinum Price'], 2),
+                       None, "USD", "mansfieldplumbing.com", None, None, url_img]
         data.append(information)
     # ------------------------------------------------------------------------------------------------------------------
 

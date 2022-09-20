@@ -148,12 +148,13 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
         linea_name = elem["Linea"]
         price_type = elem["Price Type"]
         multiplier = elem['Multiplicador']
+        url_img = elem['URL_Img']
 
         # Appending the item in a list
         information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
                        product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                        elem["Capacidad"], product_name, price_type, multiplier, elem['List Price'],
-                       None, "USD", "americanstandard-us.com", None, None, None]
+                       None, "USD", "americanstandard-us.com", None, None, url_img]
         data.append(information)
     # ------------------------------------------------------------------------------------------------------------------
 

@@ -51,8 +51,6 @@ def homedepot_data(elem, soup_html):
     """
     Programa que toma la información general de una pagina de producto del market place de HomeDepot
     """
-    print(elem['Link'])
-
     # Collecting the name and product type
     brand_name = elem["Fabricante"]
     product_name = elem["Short Name"]
