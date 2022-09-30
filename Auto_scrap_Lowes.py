@@ -30,10 +30,22 @@ fecha = datetime.datetime.today()
 folder = fecha.strftime('%Y-%m')
 if not os.path.exists('./XX_Data/' + folder):
     os.makedirs('./XX_Data/' + folder)
-output_path_toilet = './XX_Data/' + folder + '/Lowes_toilet-' + str(fecha.year) + '_' + str(fecha.month) + '.csv'
+
+# Sheet Mansfield
+sheet_name_mansfield = 'Mansfield'
+output_path_toilet_mansfield = './XX_Data/' + folder + '/Lowes_Mansfield-' + str(fecha.year) + '_' + \
+                               str(fecha.month) + '.csv'
+
+# Sheet Competitors
+sheet_name_competitor = 'Competitors'
+output_path_toilet_competitor = './XX_Data/' + folder + '/Lowes_Competitors-' + str(fecha.year) + '_' + \
+                                str(fecha.month) + '.csv'
 
 # Path for loading the URL sites
-url_path_toilet = './XX_Url/Lowes.xlsx'
+url_path_toilet = './XX_Master_database/Lowes_Database.xlsx'
+
+product_path =  [[url_path_toilet, output_path_toilet_mansfield, sheet_name_mansfield],
+                 [url_path_toilet, output_path_toilet_competitor, sheet_name_competitor]]
 
 # Number of retry
 NUM_RETRIES = 5
@@ -58,11 +70,11 @@ def lowes_data(elem, data):
 
     # Collecting the name and product type
     brand_name = elem["Fabricante"]
-    product_name = elem["Short Name"]
-    product_format = elem["Type"]
-    # status = data["productDetails"][item_id]["product"]["status"]
-    # brand_name = data["productDetails"][item_id]["product"]["brand"]
-    # product_name = data["productDetails"][item_id]["product"]["description"]
+    product_name = elem["Description"]
+    product_subcategory = elem["Subcategory"]
+    product_format = elem["Tipo"]
+    linea_name = elem["Linea"]
+    price_type = elem["Price Type"]
 
     # Collecting the price
     try:
@@ -119,10 +131,10 @@ def lowes_data(elem, data):
     # ------------------------------------------------------------------------------------------------------------------
 
     # Appending the item in a list
-    information = [datetime.datetime.today().date(), brand_name, elem["Sku"],
-                   elem["Linea"], product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
-                   elem["Capacidad (Gpl)"], product_name, item_ref,
-                   price_clean, "USD", "lowes.com", "Si", elem["Link"], url_img]
+    information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
+                   product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
+                   elem["Capacidad"], product_name, price_type, price_clean, was_price_clean, offert_price,
+                   "USD", "lowes.com", "Si", elem["Link"], url_img]
 
     return information
 
@@ -131,9 +143,9 @@ def lowes_data(elem, data):
 # Main code
 # ----------------------------------------------------------------------------------------------------------------------
 # Scrapping the information of every url
-for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
+for product_type, output_path, sheet_name in product_path:
     # Reading .xlsx file with url list
-    file_df = pd.read_excel(product_type)
+    file_df = pd.read_excel(product_type, sheet_name=sheet_name)
 
     # Keeping just the row with links
     product_df = file_df[file_df['Link'].notna()]
@@ -176,9 +188,9 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             datos.append(toilet_information)
 
     # Creating the dataframe
-    df = pd.DataFrame(data, columns=["Fecha", "Fabricante", "SKU", "Linea", "Tipo", "Rough_In",
-                                     "Bowl Height", "Asiento", "Capacidad (Gpl)", "Producto",
-                                     "Cod_Internet", "Precio", "Moneda",
+    df = pd.DataFrame(datos, columns=["Fecha", "Fabricante", "SKU", "Linea", 'Subcategoria', "Tipo", "Rough_In",
+                                     "Bowl_Height", "Asiento", "Capacidad_(Gpl)", "Producto",
+                                     "Price_Type", "Precio_Consumidor", "Precio_Anterior", "Precio_Promocion", "Moneda",
                                      "Market_Place", "Stock", "URL", "Image_url"])
 
     # Saving the file in a .csv file
