@@ -174,7 +174,7 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
         information = [datetime.datetime.today().date(), brand_name, elem["Sku"], linea_name, product_subcategory,
                        product_format, elem["Rough in"], elem["Bowl Height"], elem["Asiento"],
                        elem["Capacidad"], product_name, price_type, multiplier, elem['List Price'],
-                       None, "USD", "americanstandard-us.com", None, None, url_img]
+                       None, "USD", "gerber-us.com", None, None, url_img]
         data.append(information)
 
     # Creating the dataframe
