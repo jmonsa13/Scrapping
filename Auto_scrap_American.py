@@ -134,8 +134,9 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             soup: BeautifulSoup = BeautifulSoup(response.content, "html.parser")
 
             # Getting the information from the website
-            toilet_information = american_data(elem, soup)
-            data.append(toilet_information)
+            if elem["Scrap"] == 'Si':
+                toilet_information = american_data(elem, soup)
+                data.append(toilet_information)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Keeping just the row without links

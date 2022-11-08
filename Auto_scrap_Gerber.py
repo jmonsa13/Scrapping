@@ -154,8 +154,9 @@ for product_type, output_path in [[url_path_toilet, output_path_toilet]]:
             soup = BeautifulSoup(html_response, "html.parser")
 
             # Getting the information from the website
-            toilet_information = gerber_data(elem, soup)
-            data.append(toilet_information)
+            if elem["Scrap"] == 'Si':
+                toilet_information = gerber_data(elem, soup)
+                data.append(toilet_information)
 
     # ------------------------------------------------------------------------------------------------------------------
     # Keeping just the row without links
