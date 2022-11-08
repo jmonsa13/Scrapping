@@ -54,7 +54,7 @@ def american_data(elem, soup_html):
     multiplier = elem['Multiplicador']
 
     # Collecting the sku
-    sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
+    # sku_ref = soup_html.find('div', class_='product-number').find('span', class_='itemNumber').text
     # internet_ref = soup_html.find('div', class_='w-25 tr f6').text.split(' ')[2]
 
     # Collecting the current price
@@ -80,7 +80,7 @@ def american_data(elem, soup_html):
     print("La marca es la: {}".format(brand_name))
     print("El sanitario es el: {}".format(product_name))
     print("El tipo de producto es un: {}".format(product_format))
-    print("El sku es el: {}".format(sku_ref))
+    print("El sku es el: {}".format(elem["Sku"]))
     print("El precio listado es: {} USD".format(price_clean))
     print("El precio consumidor es: {} USD".format(consumer_price_clean))
     print(url_img)
